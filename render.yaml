@@ -21,6 +21,9 @@ services:
     name: pdf-backend
     env: docker
     region: oregon
+    # The Dockerfile copies the shared workspace package and backend source,
+    # so Render must use the repository root as the service root.
+    rootDir: .
     dockerfilePath: ./Dockerfile
     dockerContext: .
     envVars:
