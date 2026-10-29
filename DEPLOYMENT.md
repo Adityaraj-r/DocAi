@@ -21,7 +21,7 @@ This guide provides step-by-step instructions to deploy the entire **PDF Knowled
 1. Create a free account at [MongoDB Atlas](https://www.mongodb.com/cloud/atlas).
 2. Create a new **M0 Free Cluster**.
 3. Under **Database Access**, create a database user and password.
-4. Under **Network Access**, add IP `0.0.0.0/0` (Allow access from anywhere).
+4. Under **Network Access**, allow only the outbound addresses required by your hosting provider, or use the provider's private network integration when available.
 5. Click **Connect** -> **Drivers** and copy your Connection String:
    ```
    mongodb+srv://<username>:<password>@cluster0.xxx.mongodb.net/pdf_chatbot?retryWrites=true&w=majority
@@ -63,17 +63,15 @@ This guide provides step-by-step instructions to deploy the entire **PDF Knowled
 1. Log in to [Render.com](https://render.com) and click **New > Web Service**.
 2. Connect your repository.
 3. Set Root Directory: (leave blank for root).
-4. Environment: `Node`.
-5. Build Command: `npm install && npm run build:shared && npm run build:backend`.
-6. Start Command: `cd apps/backend && npm run start`.
-7. Add Environment Variables:
+4. Use the repository's `render.yaml` Blueprint (recommended), or choose the Docker runtime and set **Root Directory** to blank, **Dockerfile Path** to `./Dockerfile`, and **Docker Context** to `.`. The backend Dockerfile builds the npm workspace from the repository root.
+5. Add Environment Variables:
    - `NODE_ENV`: `production`
    - `PORT`: `10000`
    - `MONGO_URI`: `your_mongodb_atlas_uri`
    - `REDIS_URL`: `your_upstash_redis_url`
    - `JWT_SECRET`: `your_secure_jwt_secret`
    - `AI_SERVICE_URL`: `https://pdf-ai-service.onrender.com` (from Step 3)
-8. Deploy! Copy the deployed URL (e.g., `https://pdf-backend.onrender.com`).
+6. Deploy! Copy the deployed URL (e.g., `https://pdf-backend.onrender.com`).
 
 ---
 
@@ -96,3 +94,15 @@ This guide provides step-by-step instructions to deploy the entire **PDF Knowled
 - [ ] Test RAG Chat (verifies LangGraph + Groq/Gemini).
 - [ ] Test Summary, Mind Map, and Audio Overview (gTTS).
 - [ ] Test Public Share Link (`/share/:token`).
+
+## Local Docker development
+
+Create a root `.env` file with `JWT_SECRET` and the LLM keys you plan to use (`GROQ_API_KEY` and/or `GEMINI_API_KEY`). Do not commit it. The Compose stack includes MongoDB, Redis, ChromaDB, the backend, AI service, and frontend. MongoDB, Redis, and ChromaDB data live in named volumes and survive `docker compose down`.
+
+```sh
+docker compose config
+docker compose build
+docker compose up -d
+```
+
+Open the frontend at `http://localhost:3000`; the API is at `http://localhost:5000`. Stop the services with `docker compose down` (this keeps the data volumes). Do not use `docker compose down -v` unless you explicitly intend to delete local database data. For hosted Render services, provide `MONGO_URI`/`MONGODB_URI`, `REDIS_URL`, `JWT_SECRET`, `GROQ_API_KEY`, and `GEMINI_API_KEY` through the service environment settings; credentials are not stored in the Blueprint.

@@ -2,10 +2,12 @@ services:
   # Python AI Microservice (FastAPI)
   - type: web
     name: pdf-ai-service
-    env: python
+    runtime: python
     region: oregon
-    buildCommand: cd apps/ai-service && python -m pip install --upgrade pip && python -m pip install -r requirements.txt
-    startCommand: cd apps/ai-service && uvicorn main:app --host 0.0.0.0 --port $PORT
+    rootDir: apps/ai-service
+    buildCommand: python -m pip install --upgrade pip && python -m pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/v1/health
     envVars:
       - key: PORT
         value: 10000
@@ -19,13 +21,11 @@ services:
   # Node.js Backend (Express)
   - type: web
     name: pdf-backend
-    env: docker
+    runtime: docker
     region: oregon
-    # The Dockerfile copies the shared workspace package and backend source,
-    # so Render must use the repository root as the service root.
-    rootDir: .
     dockerfilePath: ./Dockerfile
     dockerContext: .
+    healthCheckPath: /health
     envVars:
       - key: NODE_ENV
         value: production
@@ -38,7 +38,4 @@ services:
       - key: JWT_SECRET
         generateValue: true
       - key: AI_SERVICE_URL
-        fromService:
-          type: web
-          name: pdf-ai-service
-          property: hostport
+        value: https://pdf-ai-service.onrender.com

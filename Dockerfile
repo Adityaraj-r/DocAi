@@ -1,40 +1,35 @@
-# Stage 1: Build stage
-FROM node:18-alpine AS builder
+FROM node:22-alpine AS build
 
 WORKDIR /app
 
-# Copy root package management files
+# Build context must be the repository root: this is an npm workspace.
 COPY package*.json ./
 COPY packages/shared/package*.json ./packages/shared/
 COPY apps/backend/package*.json ./apps/backend/
-
-# Install all dependencies (including workspace dependencies)
 RUN npm ci
 
-# Copy source code for shared package and backend application
 COPY packages/shared ./packages/shared
 COPY apps/backend ./apps/backend
+RUN npm run build:shared \
+    && npm run build:backend \
+    && npm prune --omit=dev
 
-# Build shared package first, then backend
-RUN npm run build:shared
-RUN npm run build:backend
-
-# Stage 2: Production runner stage
-FROM node:18-alpine AS runner
+FROM node:22-alpine AS runner
 
 WORKDIR /app
-
 ENV NODE_ENV=production
 ENV PORT=10000
 
-# Copy node_modules and built code from builder stage
-COPY --from=builder /app/package*.json ./
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/packages/shared ./packages/shared
-COPY --from=builder /app/apps/backend ./apps/backend
+COPY --from=build --chown=node:node /app/package*.json ./
+COPY --from=build --chown=node:node /app/node_modules ./node_modules
+COPY --from=build --chown=node:node /app/packages/shared/package.json ./packages/shared/package.json
+COPY --from=build --chown=node:node /app/packages/shared/dist ./packages/shared/dist
+COPY --from=build --chown=node:node /app/apps/backend/package.json ./apps/backend/package.json
+COPY --from=build --chown=node:node /app/apps/backend/dist ./apps/backend/dist
+RUN mkdir -p /app/apps/backend/uploads && chown node:node /app/apps/backend/uploads
 
 WORKDIR /app/apps/backend
+USER node
 
 EXPOSE 10000
-
-CMD ["npm", "run", "start"]
+CMD ["node", "dist/app.js"]
