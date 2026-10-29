@@ -8,3 +8,12 @@ dist
 .env.*
 !.env.example
 uploads
+
+# Keep the monorepo sources required by the root backend Dockerfile in the
+# build context, even when Render applies a restrictive service-level ignore.
+!apps/
+!apps/backend/
+!apps/backend/**
+!packages/
+!packages/shared/
+!packages/shared/**
