@@ -1,15 +1,15 @@
 import json
-import redis
 import threading
 from app.core.config import settings
 from app.core.logger import logger
 from app.services.ingestion import IngestionService
 from app.services.rag_pipeline import RAGPipelineService
+from app.redis_pubsub.client import create_redis_client
 
 def start_redis_listener():
     def listen_loop():
         logger.info(f"Connecting Python AI Service Redis Listener to {settings.redis_host}:{settings.redis_port}")
-        r = redis.Redis(host=settings.redis_host, port=settings.redis_port, decode_responses=True)
+        r = create_redis_client()
         pubsub = r.pubsub()
         pubsub.subscribe("doc:ingest:request", "chat:stream:request")
 

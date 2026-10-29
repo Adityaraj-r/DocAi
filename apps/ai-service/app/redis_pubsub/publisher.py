@@ -1,17 +1,11 @@
 import json
-import redis
 from datetime import datetime
-from app.core.config import settings
 from app.core.logger import logger
+from app.redis_pubsub.client import create_redis_client
 
 class RedisEventPublisher:
     def __init__(self):
-        self.r = redis.Redis(
-            host=settings.redis_host,
-            port=settings.redis_port,
-            password=settings.redis_password,
-            decode_responses=True
-        )
+        self.r = create_redis_client()
 
     def publish_ingest_status(self, document_id: str, status: str, chunk_count: int = 0, error_reason: str = None, correlation_id: str = None):
         payload = {

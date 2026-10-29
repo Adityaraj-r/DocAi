@@ -1,7 +1,6 @@
 import os
 import re
 import json
-import redis
 from datetime import datetime
 from typing import List
 
@@ -19,6 +18,7 @@ from app.core.config import settings
 from app.core.logger import logger
 from app.db.chroma import get_chroma_client
 from app.services.embedding_service import EmbeddingService
+from app.redis_pubsub.client import create_redis_client
 
 
 # ---------------------------------------------------------------------------
@@ -144,7 +144,7 @@ class IngestionService:
     @staticmethod
     def ingest_pdf(document_id: str, file_path: str, collection_name: str) -> dict:
         logger.info(f"Starting PDF ingestion for doc={document_id}, file={file_path}, col={collection_name}")
-        r = redis.Redis(host=settings.redis_host, port=settings.redis_port, decode_responses=True)
+        r = create_redis_client()
 
         try:
             r.publish("doc:ingest:status", json.dumps({

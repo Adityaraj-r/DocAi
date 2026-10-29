@@ -1,4 +1,4 @@
-FROM python:3.10-slim
+FROM python:3.11-slim
 
 WORKDIR /app
 
@@ -8,12 +8,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ffmpeg \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy requirements
+# Install dependencies from PyPI; requirements.txt uses the official CPU wheel
+# listing only for the pinned PyTorch wheel, keeping build dependencies on PyPI.
 COPY requirements.txt .
-
-# Pre-install CPU-only PyTorch to avoid downloading heavy CUDA binaries (~1.2GB)
-RUN pip install --no-cache-dir torch --index-url https://download.pytorch.org/whl/cpu && \
-    pip install --no-cache-dir -r requirements.txt
+RUN python -m pip install --no-cache-dir --upgrade pip && \
+    python -m pip install --no-cache-dir -r requirements.txt
 
 # Copy application code
 COPY . .

@@ -12,6 +12,7 @@ class Settings(BaseSettings):
     redis_host: str = "localhost"
     redis_port: int = 6379
     redis_password: str | None = None
+    redis_url: str | None = None
 
     chroma_host: str = "localhost"
     chroma_port: int = 8000

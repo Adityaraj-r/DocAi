@@ -1,9 +1,9 @@
 import json
 import time
-import redis
 import threading
 from app.core.config import settings
 from app.core.logger import logger
+from app.redis_pubsub.client import create_redis_client
 from app.services.ingestion_service import IngestionService
 from app.services.rag_pipeline import RAGPipelineService
 
@@ -11,7 +11,6 @@ class RedisSubscriberWorker:
     def __init__(self):
         self.host = settings.redis_host
         self.port = settings.redis_port
-        self.password = settings.redis_password
 
     def _process_message_with_retry(self, channel: str, data: dict, max_retries: int = 3):
         correlation_id = data.get("correlationId", "N/A")
@@ -45,7 +44,7 @@ class RedisSubscriberWorker:
             while True:
                 try:
                     logger.info(f"Connecting Python AI Service Redis Subscriber to {self.host}:{self.port}")
-                    r = redis.Redis(host=self.host, port=self.port, password=self.password, decode_responses=True)
+                    r = create_redis_client()
                     pubsub = r.pubsub()
                     pubsub.subscribe("doc:ingest:request", "chat:stream:request")
                     logger.info("Subscribed to 'doc:ingest:request' and 'chat:stream:request' channels")
