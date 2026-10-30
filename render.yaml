@@ -23,6 +23,8 @@ services:
     name: pdf-backend
     runtime: docker
     region: oregon
+    # Keep Dockerfile and build context rooted at the monorepo checkout.
+    rootDir: .
     dockerfilePath: ./Dockerfile
     dockerContext: .
     healthCheckPath: /health
