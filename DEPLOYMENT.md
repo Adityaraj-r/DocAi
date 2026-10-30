@@ -8,7 +8,7 @@ This guide provides step-by-step instructions to deploy the entire **PDF Knowled
 
 | Component | Technology | Recommended Free Host | Alternative Host |
 | :--- | :--- | :--- | :--- |
-| **Frontend** | Next.js 15, TailwindCSS | **Vercel** | Netlify / Render |
+| **Frontend** | Next.js 16, React 19, TailwindCSS | **Vercel** | Netlify / Render |
 | **Backend** | Node.js, Express, TypeScript | **Render** | Railway / Koyeb |
 | **AI Microservice** | Python 3.10, FastAPI, LangChain | **Render** | Hugging Face Spaces / Railway |
 | **Database** | MongoDB | **MongoDB Atlas** | Railway MongoDB |
@@ -79,10 +79,11 @@ This guide provides step-by-step instructions to deploy the entire **PDF Knowled
 
 1. Log in to [Vercel](https://vercel.com) and click **Add New > Project**.
 2. Import your GitHub repository.
-3. Set **Root Directory** to `apps/frontend`.
-4. Add Environment Variable:
-   - `NEXT_PUBLIC_API_URL`: `https://pdf-backend.onrender.com/api/v1` (from Step 4)
-5. Click **Deploy**.
+3. Set **Root Directory** to `apps/frontend` and enable **Include source files outside of the Root Directory in the Build Step** so the app can use `packages/shared`.
+4. Keep the Next.js framework preset and the build command in `apps/frontend/vercel.json`.
+5. Add Environment Variable for Production, Preview, and Development:
+   - `NEXT_PUBLIC_API_URL`: `https://pdf-backend.onrender.com/api/v1` (from Step 4). The frontend also accepts the backend origin without `/api/v1` and adds the prefix automatically.
+6. Click **Deploy** after saving the environment variable. `NEXT_PUBLIC_*` values are included at build time, so changing this value requires a new deployment.
 
 ---
 

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { X, ChevronLeft, ChevronRight, ZoomIn, ZoomOut, FileText, ExternalLink } from 'lucide-react';
 import { useAuthStore } from '../store/useAuthStore';
+import { API_BASE_URL } from '../lib/api-client';
 
 interface PdfViewerModalProps {
   isOpen: boolean;
@@ -31,7 +32,7 @@ export const PdfViewerModal: React.FC<PdfViewerModalProps> = ({
 
   if (!isOpen || !documentId) return null;
 
-  const baseUrl = `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1'}/documents/${documentId}/file`;
+  const baseUrl = `${API_BASE_URL}/documents/${documentId}/file`;
   const fileApiUrl = token ? `${baseUrl}?token=${encodeURIComponent(token)}` : baseUrl;
   const iframeSrc = `${fileApiUrl}#page=${currentPage}&view=FitH`;
 

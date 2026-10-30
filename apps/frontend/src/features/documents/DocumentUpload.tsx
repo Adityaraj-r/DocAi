@@ -6,8 +6,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useDocumentStore } from '../../store/useDocumentStore';
 import { useAuthStore } from '../../store/useAuthStore';
 import type { IDocument } from '@pdf-chatbot/shared';
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1';
+import { API_BASE_URL } from '../../lib/api-client';
 
 interface DocumentUploadProps {
   compact?: boolean;

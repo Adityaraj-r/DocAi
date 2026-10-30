@@ -1,6 +1,14 @@
 import type { ApiResponse } from '@pdf-chatbot/shared';
 
-export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1';
+const configuredApiUrl = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1')
+  .trim()
+  .replace(/\/+$/, '');
+
+// Accept either the backend origin or the full versioned API URL. This keeps
+// Vercel environment configuration from accidentally calling /auth/* routes.
+export const API_BASE_URL = /\/api\/v1$/i.test(configuredApiUrl)
+  ? configuredApiUrl
+  : `${configuredApiUrl}/api/v1`;
 
 export async function fetchApi<T>(
   endpoint: string,

@@ -1,6 +1,6 @@
 # PDF Knowledge Base AI Chatbot (RAG System)
 
-A production-ready, clean-architecture AI Full Stack Microservice application built with **Next.js 15 (App Router)**, **TypeScript**, **Node.js / Express**, **Python FastAPI**, **LangChain**, **LangGraph**, **ChromaDB**, **MongoDB Atlas**, **Groq / Google Gemini**, and **Redis Pub/Sub**.
+A production-ready, clean-architecture AI Full Stack Microservice application built with **Next.js 16 and React 19 (App Router)**, **TypeScript**, **Node.js / Express**, **Python FastAPI**, **LangChain**, **LangGraph**, **ChromaDB**, **MongoDB Atlas**, **Groq / Google Gemini**, and **Redis Pub/Sub**.
 
 ---
 
@@ -8,8 +8,8 @@ A production-ready, clean-architecture AI Full Stack Microservice application bu
 
 ```
 ┌────────────────────────────────────────────────────────────────────────────────────────┐
-│                               Next.js 15 App Router Frontend                           │
-│        (React 18, React Query, Zustand, Tailwind CSS, shadcn/ui, Markdown)             │
+│                               Next.js 16 App Router Frontend                          │
+│        (React 19, React Query, Zustand, Tailwind CSS, shadcn/ui, Markdown)             │
 └───────────────────────────────────────────┬────────────────────────────────────────────┘
                                             │ HTTP REST API (JWT Bearer Auth)
                                             ▼
@@ -43,7 +43,7 @@ A production-ready, clean-architecture AI Full Stack Microservice application bu
 
 ## 🛠️ Mandatory Tech Stack
 
-- **Frontend**: Next.js 15 (App Router), TypeScript, Tailwind CSS, shadcn/ui primitives, React Query (@tanstack/react-query), Zustand
+- **Frontend**: Next.js 16 (App Router), React 19, TypeScript, Tailwind CSS, shadcn/ui primitives, React Query (@tanstack/react-query), Zustand
 - **Backend**: Node.js, Express, TypeScript, JWT Auth, bcrypt, Multer, Zod DTOs, Winston Logger, Swagger UI (`/api-docs`)
 - **AI Microservice**: Python 3.11+, FastAPI, LangChain, **LangGraph (StateGraph Workflow)**, Groq LPUs (`llama-3.1-70b-versatile`) / Google Gemini (`gemini-1.5-flash`), PyPDF, SentenceTransformers
 - **Database**: MongoDB Atlas Cloud
@@ -65,7 +65,7 @@ A production-ready, clean-architecture AI Full Stack Microservice application bu
 ```
 pdf-kb-ai-chatbot/
 ├── apps/
-│   ├── frontend/                   # Next.js 15 App Router Frontend
+│   ├── frontend/                   # Next.js 16 App Router Frontend
 │   │   ├── src/
 │   │   │   ├── app/                # App Router Layout, Error Boundary & Pages
 │   │   │   ├── components/         # UI Primitives & Providers
@@ -154,7 +154,7 @@ pip install -r requirements.txt
 uvicorn main:app --reload --port 8001
 ```
 
-### 4. Start Next.js 15 Frontend (Port 3000)
+### 4. Start Next.js 16 Frontend (Port 3000)
 
 ```bash
 npm run dev:frontend
